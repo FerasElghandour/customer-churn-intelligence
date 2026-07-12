@@ -1,0 +1,27 @@
+feature,auc,separation,churn_top_decile,churn_bottom_decile,mean_churners,mean_stayers,verdict
+frequency,0.275,0.45,10.2,71.9,3.3,8.5,STRONG
+orders_last_180d,0.277,0.447,9.2,69.5,0.8,2.5,STRONG
+revenue_last_180d,0.277,0.445,12.1,69.5,290.8,1347.7,STRONG
+monetary_total,0.282,0.436,12.5,78.4,1335.7,4853.4,STRONG
+recency,0.707,0.415,72.1,21.4,185.0,103.8,STRONG
+distinct_products,0.303,0.394,17.9,74.1,53.0,115.5,STRONG
+revenue_last_90d,0.311,0.377,13.9,63.5,121.6,715.1,STRONG
+orders_last_90d,0.314,0.373,15.9,63.5,0.3,1.3,STRONG
+monetary_max,0.348,0.304,28.3,72.9,567.3,923.8,STRONG
+recency_ratio,0.642,0.285,66.7,36.2,3.3,1.8,useful
+revenue_share_last_90d,0.358,0.283,44.1,63.5,0.1,0.2,useful
+return_orders,0.359,0.281,20.9,59.9,0.7,2.2,useful
+orders_share_last_90d,0.364,0.272,44.9,63.5,0.1,0.2,useful
+own_mean_gap,0.63,0.259,67.7,29.5,109.0,80.5,useful
+return_value,0.371,0.258,27.1,59.9,107.8,169.6,useful
+own_std_gap,0.392,0.217,55.3,68.1,31.7,36.7,useful
+has_cadence,0.394,0.213,42.3,71.9,0.7,0.9,useful
+revenue_last_30d,0.396,0.209,18.6,55.6,40.1,225.7,useful
+orders_last_30d,0.397,0.207,25.3,55.6,0.1,0.4,useful
+tenure,0.402,0.196,29.8,47.3,382.0,437.2,useful
+avg_items_per_order,0.406,0.189,39.0,66.8,266.1,283.1,useful
+monetary_avg,0.408,0.184,39.2,69.8,401.8,450.9,useful
+return_rate,0.41,0.18,54.5,59.9,0.0,0.0,useful
+avg_lines_per_order,0.431,0.138,42.3,65.2,22.7,25.8,useful
+revenue_momentum,0.479,0.043,47.5,53.4,-0.1,-0.0,weak / noise
+is_uk,0.504,0.008,49.5,49.2,0.9,0.9,weak / noise
