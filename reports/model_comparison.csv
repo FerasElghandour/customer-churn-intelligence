@@ -1,0 +1,5 @@
+model,ROC_AUC,PR_AUC,precision,recall,F1,Brier,calib_error
+1. Logistic (baseline),0.763,0.713,0.675,0.73,0.702,0.1965,0.0348
+2. RandomForest,0.766,0.717,0.693,0.732,0.712,0.1944,0.0358
+3. GradientBoosting,0.764,0.715,0.668,0.726,0.696,0.1965,0.0518
+4. GB + isotonic calibration,0.763,0.714,0.671,0.738,0.703,0.1952,0.0293
