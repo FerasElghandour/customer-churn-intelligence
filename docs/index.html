@@ -1,0 +1,1182 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Customer Churn Intelligence — £1.75M at risk</title>
+<meta name="description" content="£1.75M of revenue sits in customers likely to leave. This system finds them, and works out which ones are actually worth saving.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+background:#0f1216;color:#e8ecf1;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1060px;margin:0 auto;padding:32px 20px 80px}
+header{border-bottom:1px solid #232a33;padding-bottom:22px;margin-bottom:26px}
+h1{font-size:26px;font-weight:650;letter-spacing:-.01em}
+.sub{color:#8b97a6;margin-top:8px;font-size:15px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.09em;color:#8b97a6;
+margin:38px 0 14px;font-weight:600}
+.hero{background:#151a21;border:1px solid #232a33;border-radius:10px;padding:22px 24px}
+.hero p{color:#c3ccd7;font-size:15px}
+.hero strong{color:#fff}
+.big{font-size:42px;font-weight:700;letter-spacing:-.03em;color:#f85149;line-height:1.1}
+.biglab{font-size:13px;color:#8b97a6;margin-top:4px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+.kpi{background:#0f1419;border:1px solid #232a33;border-radius:8px;padding:14px}
+.kpi .v{font-size:24px;font-weight:680;letter-spacing:-.02em}
+.kpi .l{font-size:12px;color:#8b97a6;margin-top:3px;line-height:1.35}
+.good{color:#3fb950}.warn{color:#d29922}.bad{color:#f85149}
+.finding{background:rgba(210,153,34,.07);border:1px solid rgba(210,153,34,.35);
+border-radius:10px;padding:20px 24px;margin-top:14px}
+.finding .t{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#d29922;
+font-weight:700;margin-bottom:8px}
+.flip{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.flipcard{background:#0f1419;border:1px solid #232a33;border-radius:8px;padding:14px}
+.flipcard.win{border-left:3px solid #3fb950}
+.flipcard.lose{border-left:3px solid #f85149}
+.flipcard .h{font-size:13px;font-weight:650;margin-bottom:6px}
+.flipcard .n{font-size:22px;font-weight:700;letter-spacing:-.02em}
+.flipcard .d{font-size:12px;color:#8b97a6;margin-top:5px}
+.tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tier{background:#151a21;border:1px solid #232a33;border-radius:10px;padding:16px;
+border-left:3px solid #2d3540}
+.tier.vip{border-left-color:#a371f7}.tier.high{border-left-color:#f85149}
+.tier.mid{border-left-color:#d29922}.tier.low{border-left-color:#3fb950}
+.tier .n{font-size:22px;font-weight:680}
+.tier .t{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#8b97a6;margin-top:2px}
+.tier .d{font-size:12px;color:#6e7a89;margin-top:8px;line-height:1.45}
+.filters{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.filters button{background:#151a21;border:1px solid #232a33;color:#8b97a6;padding:7px 14px;
+border-radius:999px;font-size:13px;cursor:pointer;font-family:inherit}
+.filters button:hover{border-color:#3a4453;color:#e8ecf1}
+.filters button.on{background:#e8ecf1;color:#0f1216;border-color:#e8ecf1;font-weight:600}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.07em;
+color:#6e7a89;padding:10px 10px;border-bottom:1px solid #232a33;font-weight:600}
+.tbl td{padding:11px 10px;border-bottom:1px solid #1a2028}
+.tbl tr:hover td{background:#151a21}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums}
+.cid{font-weight:600}
+.risk{font-weight:650;color:#f85149;font-variant-numeric:tabular-nums}
+.pill{font-size:11px;font-weight:650;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.pill.vip{background:rgba(163,113,247,.15);color:#a371f7}
+.pill.high{background:rgba(248,81,73,.14);color:#f85149}
+.pill.mid{background:rgba(210,153,34,.14);color:#d29922}
+.pill.low{background:rgba(63,185,80,.13);color:#3fb950}
+.act{font-size:13px;color:#c3ccd7}
+.note{color:#6e7a89;font-size:13px;margin-top:10px;line-height:1.6}
+.limit{background:rgba(248,81,73,.06);border:1px solid rgba(248,81,73,.3);
+border-radius:10px;padding:18px 22px;margin-top:14px}
+.limit .t{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#f85149;
+font-weight:700;margin-bottom:8px}
+table.mini{border-collapse:collapse;font-size:13px;margin-top:10px}
+table.mini td{padding:4px 14px 4px 0;color:#c3ccd7;font-variant-numeric:tabular-nums}
+table.mini td:first-child{color:#8b97a6}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid #232a33;color:#6e7a89;font-size:13px}
+footer a{color:#8b97a6}
+@media(max-width:820px){
+ .kpis,.tiers{grid-template-columns:repeat(2,1fr)}
+ .flip{grid-template-columns:1fr}
+ .wrap{padding:22px 14px 60px}
+ h1{font-size:21px}.big{font-size:34px}
+ .hide-sm{display:none}
+ .tbl td,.tbl th{padding:9px 6px}
+}
+</style>
+</head><body><div class="wrap">
+
+<header>
+<h1>Customer Churn Intelligence</h1>
+<div class="sub">Which customers are about to leave — and which are actually worth paying to keep?</div>
+</header>
+
+<div class="hero">
+<div class="big">£1,754,168</div>
+<div class="biglab">of annual revenue sits in customers more likely than not to walk
+ — 26% of the book.</div>
+
+<p style="margin-top:16px"><strong>The problem.</strong> In ecommerce nobody cancels. They just
+quietly stop buying, and you find out months later from a chart. Of 4,306
+active customers, roughly half will go silent within 90 days.</p>
+
+<p style="margin-top:10px"><strong>What this does.</strong> It scores every customer's
+probability of leaving, multiplies that by what they're actually worth, and compares it against
+what a retention offer costs. The output isn't a probability table — it's a ranked list of
+<strong>who to save, worth how much, and what to do about them</strong>.</p>
+
+<div class="kpis">
+<div class="kpi"><div class="v bad">£701,667</div><div class="l">Gross margin at risk</div></div>
+<div class="kpi"><div class="v">2,300</div><div class="l">Customers worth contacting</div></div>
+<div class="kpi"><div class="v good">£1,142,638</div><div class="l">Revenue that list protects</div></div>
+<div class="kpi"><div class="v">4,306</div><div class="l">Active customers scored</div></div>
+</div>
+<div class="note">Assumptions: 40% gross margin · 15% win-back
+offer (next order) · 25% save rate · £1.50 per contact.
+Model: logistic regression, calibrated. It beat random forest and gradient boosting — or rather,
+they failed to beat it.</div>
+</div>
+
+<h2>The finding</h2>
+<div class="finding">
+<div class="t">Offer design — not the model — decides whether retention makes money</div>
+<p style="color:#c3ccd7;font-size:15px">Same model. Same customers. Same 15% discount.
+The <em>only</em> difference is whether that discount applies to <strong>one order</strong> or to
+<strong>a year of orders</strong>. It flips the answer from "run this campaign" to "don't bother."</p>
+<div class="flip">
+<div class="flipcard win"><div class="h">"15% off your next order"</div>
+<div class="n good">+£1,841</div>
+<div class="d">Costs 15% of ONE order. False alarms are cheap.<br>
+Act above <b>49%</b> churn risk (median). 558 contacted.</div></div>
+<div class="flipcard lose"><div class="h">"15% off, standing discount"</div>
+<div class="n bad">£-858</div>
+<div class="d">Costs 15% of EVERYTHING they buy for a year.<br>
+Need <b>72%</b> certainty before acting. Only 190 qualify.</div></div>
+</div>
+<div class="note">No amount of model accuracy rescues a badly designed offer.
+This is a marketing decision that a data scientist would never think to check.</div>
+</div>
+
+<h2>Where the money is — and how the bar moves with value</h2>
+<div class="tiers"><div class="tier vip">
+<div class="n">£175,565</div>
+<div class="t">VIP (>£10k) · at risk</div>
+<div class="d"><b>16</b> of 102 worth contacting.<br>
+Act above <b>10%</b> churn risk.</div></div><div class="tier high">
+<div class="n">£533,117</div>
+<div class="t">High (£2k-10k) · at risk</div>
+<div class="d"><b>291</b> of 752 worth contacting.<br>
+Act above <b>19%</b> churn risk.</div></div><div class="tier mid">
+<div class="n">£750,857</div>
+<div class="t">Mid (£500-2k) · at risk</div>
+<div class="d"><b>1062</b> of 1716 worth contacting.<br>
+Act above <b>39%</b> churn risk.</div></div><div class="tier low">
+<div class="n">£294,630</div>
+<div class="t">Low (<£500) · at risk</div>
+<div class="d"><b>931</b> of 1736 worth contacting.<br>
+Act above <b>73%</b> churn risk.</div></div></div>
+<div class="note">The threshold is <strong>per customer, not per fleet</strong>. A VIP earns a call at
+10% suspicion because a year of their margin dwarfs one discounted order.
+A low-value customer must clear 73% — there's simply less to win.
+That falls out of the economics; it isn't a rule bolted on.</div>
+
+<h2>Chasing every churner loses money</h2>
+<table class="tbl" style="max-width:560px">
+<thead><tr><th>Policy</th><th class="num">Contacted</th><th class="num">Churners caught</th><th class="num">Net £</th></tr></thead>
+<tbody><tr><td>EV-optimal (value-weighted)</td><td class='num'>558</td><td class='num'>56%</td><td class='num' style='color:#3fb950'>£1,841</td></tr><tr><td>fixed p>=30%</td><td class='num'>806</td><td class='num'>91%</td><td class='num' style='color:#3fb950'>£2,454</td></tr><tr><td>fixed p>=40%</td><td class='num'>685</td><td class='num'>83%</td><td class='num' style='color:#3fb950'>£2,429</td></tr><tr><td>fixed p>=50%</td><td class='num'>573</td><td class='num'>73%</td><td class='num' style='color:#3fb950'>£2,509</td></tr><tr><td>fixed p>=60%</td><td class='num'>405</td><td class='num'>56%</td><td class='num' style='color:#3fb950'>£2,392</td></tr><tr><td>fixed p>=70%</td><td class='num'>247</td><td class='num'>35%</td><td class='num' style='color:#3fb950'>£29</td></tr><tr><td>fixed p>=80%</td><td class='num'>92</td><td class='num'>14%</td><td class='num' style='color:#f85149'>£-309</td></tr><tr><td>fixed p>=90%</td><td class='num'>1</td><td class='num'>0%</td><td class='num' style='color:#3fb950'>£291</td></tr></tbody></table>
+<div class="note">Scored on 1,077 held-out customers against real outcomes.
+Contacting 806 people catches <b>91%</b> of churners and earns <b>less</b> than contacting 573 and catching 73%.
+Recall is not the objective. Profit is.</div>
+
+<h2>The list — who to save, ranked by revenue at risk</h2>
+<div class="filters">
+<button class="on" data-f="all">All (2,300)</button>
+<button data-f="vip">VIP</button>
+<button data-f="high">High</button>
+<button data-f="mid">Mid</button>
+<button data-f="low">Low</button>
+</div>
+<table class="tbl">
+<thead><tr>
+<th>Customer</th><th class="num">Churn risk</th><th class="num hide-sm">Worth /yr</th>
+<th class="num">Revenue at risk</th><th class="num hide-sm">Expected gain</th>
+<th>Tier</th><th>Recommended action</th>
+</tr></thead>
+<tbody><tr data-s="vip">
+<td class="cid">12346</td>
+<td class="num">98%</td>
+<td class="num hide-sm">£17,891</td>
+<td class="num risk">£17,499</td>
+<td class="num hide-sm">£718</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="vip">
+<td class="cid">15749</td>
+<td class="num">85%</td>
+<td class="num hide-sm">£17,891</td>
+<td class="num risk">£15,218</td>
+<td class="num hide-sm">£311</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="vip">
+<td class="cid">16754</td>
+<td class="num">88%</td>
+<td class="num hide-sm">£16,576</td>
+<td class="num risk">£14,550</td>
+<td class="num hide-sm">£1,271</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="vip">
+<td class="cid">12454</td>
+<td class="num">89%</td>
+<td class="num hide-sm">£12,931</td>
+<td class="num risk">£11,513</td>
+<td class="num hide-sm">£935</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="vip">
+<td class="cid">13687</td>
+<td class="num">84%</td>
+<td class="num hide-sm">£11,881</td>
+<td class="num risk">£9,937</td>
+<td class="num hide-sm">£328</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="vip">
+<td class="cid">17850</td>
+<td class="num">48%</td>
+<td class="num hide-sm">£17,891</td>
+<td class="num risk">£8,670</td>
+<td class="num hide-sm">£631</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="vip">
+<td class="cid">12939</td>
+<td class="num">40%</td>
+<td class="num hide-sm">£13,831</td>
+<td class="num risk">£5,559</td>
+<td class="num hide-sm">£392</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="vip">
+<td class="cid">12433</td>
+<td class="num">35%</td>
+<td class="num hide-sm">£13,448</td>
+<td class="num risk">£4,720</td>
+<td class="num hide-sm">£220</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="vip">
+<td class="cid">13093</td>
+<td class="num">23%</td>
+<td class="num hide-sm">£17,891</td>
+<td class="num risk">£4,068</td>
+<td class="num hide-sm">£246</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="high">
+<td class="cid">15523</td>
+<td class="num">52%</td>
+<td class="num hide-sm">£7,703</td>
+<td class="num risk">£4,030</td>
+<td class="num hide-sm">£291</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">18251</td>
+<td class="num">64%</td>
+<td class="num hide-sm">£6,287</td>
+<td class="num risk">£4,012</td>
+<td class="num hide-sm">£154</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="vip">
+<td class="cid">15032</td>
+<td class="num">32%</td>
+<td class="num hide-sm">£10,997</td>
+<td class="num risk">£3,546</td>
+<td class="num hide-sm">£129</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="high">
+<td class="cid">17044</td>
+<td class="num">52%</td>
+<td class="num hide-sm">£6,713</td>
+<td class="num risk">£3,481</td>
+<td class="num hide-sm">£246</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">16546</td>
+<td class="num">59%</td>
+<td class="num hide-sm">£5,606</td>
+<td class="num risk">£3,310</td>
+<td class="num hide-sm">£212</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14866</td>
+<td class="num">41%</td>
+<td class="num hide-sm">£7,578</td>
+<td class="num risk">£3,100</td>
+<td class="num hide-sm">£210</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="vip">
+<td class="cid">16210</td>
+<td class="num">17%</td>
+<td class="num hide-sm">£17,891</td>
+<td class="num risk">£2,982</td>
+<td class="num hide-sm">£133</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="high">
+<td class="cid">15808</td>
+<td class="num">42%</td>
+<td class="num hide-sm">£6,859</td>
+<td class="num risk">£2,865</td>
+<td class="num hide-sm">£195</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">12967</td>
+<td class="num">66%</td>
+<td class="num hide-sm">£4,307</td>
+<td class="num risk">£2,843</td>
+<td class="num hide-sm">£174</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="vip">
+<td class="cid">16191</td>
+<td class="num">26%</td>
+<td class="num hide-sm">£10,743</td>
+<td class="num risk">£2,832</td>
+<td class="num hide-sm">£150</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="vip">
+<td class="cid">14733</td>
+<td class="num">18%</td>
+<td class="num hide-sm">£15,643</td>
+<td class="num risk">£2,791</td>
+<td class="num hide-sm">£132</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="high">
+<td class="cid">17308</td>
+<td class="num">60%</td>
+<td class="num hide-sm">£4,512</td>
+<td class="num risk">£2,718</td>
+<td class="num hide-sm">£85</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">12497</td>
+<td class="num">67%</td>
+<td class="num hide-sm">£3,994</td>
+<td class="num risk">£2,674</td>
+<td class="num hide-sm">£78</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14134</td>
+<td class="num">53%</td>
+<td class="num hide-sm">£4,965</td>
+<td class="num risk">£2,647</td>
+<td class="num hide-sm">£172</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15332</td>
+<td class="num">52%</td>
+<td class="num hide-sm">£4,848</td>
+<td class="num risk">£2,500</td>
+<td class="num hide-sm">£98</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">12356</td>
+<td class="num">43%</td>
+<td class="num hide-sm">£5,555</td>
+<td class="num risk">£2,385</td>
+<td class="num hide-sm">£124</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">16532</td>
+<td class="num">42%</td>
+<td class="num hide-sm">£5,663</td>
+<td class="num risk">£2,376</td>
+<td class="num hide-sm">£68</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">12435</td>
+<td class="num">36%</td>
+<td class="num hide-sm">£6,500</td>
+<td class="num risk">£2,328</td>
+<td class="num hide-sm">£10</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15299</td>
+<td class="num">44%</td>
+<td class="num hide-sm">£5,188</td>
+<td class="num risk">£2,301</td>
+<td class="num hide-sm">£110</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13205</td>
+<td class="num">82%</td>
+<td class="num hide-sm">£2,803</td>
+<td class="num risk">£2,288</td>
+<td class="num hide-sm">£64</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13802</td>
+<td class="num">22%</td>
+<td class="num hide-sm">£9,883</td>
+<td class="num risk">£2,219</td>
+<td class="num hide-sm">£38</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14146</td>
+<td class="num">38%</td>
+<td class="num hide-sm">£5,729</td>
+<td class="num risk">£2,174</td>
+<td class="num hide-sm">£106</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13763</td>
+<td class="num">61%</td>
+<td class="num hide-sm">£3,502</td>
+<td class="num risk">£2,141</td>
+<td class="num hide-sm">£70</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">18055</td>
+<td class="num">26%</td>
+<td class="num hide-sm">£8,084</td>
+<td class="num risk">£2,136</td>
+<td class="num hide-sm">£115</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">18087</td>
+<td class="num">36%</td>
+<td class="num hide-sm">£5,944</td>
+<td class="num risk">£2,132</td>
+<td class="num hide-sm">£94</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13135</td>
+<td class="num">67%</td>
+<td class="num hide-sm">£3,096</td>
+<td class="num risk">£2,061</td>
+<td class="num hide-sm">£78</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14737</td>
+<td class="num">59%</td>
+<td class="num hide-sm">£3,471</td>
+<td class="num risk">£2,061</td>
+<td class="num hide-sm">£108</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13316</td>
+<td class="num">26%</td>
+<td class="num hide-sm">£7,785</td>
+<td class="num risk">£2,002</td>
+<td class="num hide-sm">£32</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">16126</td>
+<td class="num">24%</td>
+<td class="num hide-sm">£8,293</td>
+<td class="num risk">£1,987</td>
+<td class="num hide-sm">£91</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">16812</td>
+<td class="num">80%</td>
+<td class="num hide-sm">£2,392</td>
+<td class="num risk">£1,918</td>
+<td class="num hide-sm">£155</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15485</td>
+<td class="num">59%</td>
+<td class="num hide-sm">£3,252</td>
+<td class="num risk">£1,904</td>
+<td class="num hide-sm">£114</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">12755</td>
+<td class="num">25%</td>
+<td class="num hide-sm">£7,630</td>
+<td class="num risk">£1,878</td>
+<td class="num hide-sm">£76</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="vip">
+<td class="cid">16553</td>
+<td class="num">16%</td>
+<td class="num hide-sm">£11,534</td>
+<td class="num risk">£1,856</td>
+<td class="num hide-sm">£47</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="high">
+<td class="cid">14439</td>
+<td class="num">54%</td>
+<td class="num hide-sm">£3,441</td>
+<td class="num risk">£1,849</td>
+<td class="num hide-sm">£14</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">18092</td>
+<td class="num">22%</td>
+<td class="num hide-sm">£7,981</td>
+<td class="num risk">£1,793</td>
+<td class="num hide-sm">£62</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13225</td>
+<td class="num">30%</td>
+<td class="num hide-sm">£5,896</td>
+<td class="num risk">£1,784</td>
+<td class="num hide-sm">£51</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="mid">
+<td class="cid">14933</td>
+<td class="num">100%</td>
+<td class="num hide-sm">£1,770</td>
+<td class="num risk">£1,770</td>
+<td class="num hide-sm">£142</td>
+<td><span class="pill mid">Mid</span></td>
+<td class="act">Send 15% win-back offer (automated email)</td>
+</tr><tr data-s="high">
+<td class="cid">13941</td>
+<td class="num">34%</td>
+<td class="num hide-sm">£5,137</td>
+<td class="num risk">£1,738</td>
+<td class="num hide-sm">£90</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13329</td>
+<td class="num">48%</td>
+<td class="num hide-sm">£3,639</td>
+<td class="num risk">£1,733</td>
+<td class="num hide-sm">£83</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">12798</td>
+<td class="num">55%</td>
+<td class="num hide-sm">£3,141</td>
+<td class="num risk">£1,733</td>
+<td class="num hide-sm">£34</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15034</td>
+<td class="num">31%</td>
+<td class="num hide-sm">£5,525</td>
+<td class="num risk">£1,686</td>
+<td class="num hide-sm">£90</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15934</td>
+<td class="num">76%</td>
+<td class="num hide-sm">£2,191</td>
+<td class="num risk">£1,673</td>
+<td class="num hide-sm">£96</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15903</td>
+<td class="num">41%</td>
+<td class="num hide-sm">£4,101</td>
+<td class="num risk">£1,668</td>
+<td class="num hide-sm">£99</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">16008</td>
+<td class="num">41%</td>
+<td class="num hide-sm">£4,048</td>
+<td class="num risk">£1,662</td>
+<td class="num hide-sm">£124</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14440</td>
+<td class="num">49%</td>
+<td class="num hide-sm">£3,373</td>
+<td class="num risk">£1,654</td>
+<td class="num hide-sm">£106</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13523</td>
+<td class="num">47%</td>
+<td class="num hide-sm">£3,506</td>
+<td class="num risk">£1,653</td>
+<td class="num hide-sm">£51</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">12913</td>
+<td class="num">52%</td>
+<td class="num hide-sm">£3,180</td>
+<td class="num risk">£1,652</td>
+<td class="num hide-sm">£121</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14566</td>
+<td class="num">60%</td>
+<td class="num hide-sm">£2,752</td>
+<td class="num risk">£1,648</td>
+<td class="num hide-sm">£79</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14045</td>
+<td class="num">41%</td>
+<td class="num hide-sm">£3,863</td>
+<td class="num risk">£1,601</td>
+<td class="num hide-sm">£75</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">17937</td>
+<td class="num">44%</td>
+<td class="num hide-sm">£3,615</td>
+<td class="num risk">£1,590</td>
+<td class="num hide-sm">£85</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15123</td>
+<td class="num">52%</td>
+<td class="num hide-sm">£3,070</td>
+<td class="num risk">£1,590</td>
+<td class="num hide-sm">£77</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">16303</td>
+<td class="num">29%</td>
+<td class="num hide-sm">£5,376</td>
+<td class="num risk">£1,583</td>
+<td class="num hide-sm">£28</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="vip">
+<td class="cid">17017</td>
+<td class="num">16%</td>
+<td class="num hide-sm">£10,160</td>
+<td class="num risk">£1,576</td>
+<td class="num hide-sm">£66</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="high">
+<td class="cid">13324</td>
+<td class="num">29%</td>
+<td class="num hide-sm">£5,341</td>
+<td class="num risk">£1,550</td>
+<td class="num hide-sm">£69</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">17621</td>
+<td class="num">57%</td>
+<td class="num hide-sm">£2,697</td>
+<td class="num risk">£1,542</td>
+<td class="num hide-sm">£107</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13362</td>
+<td class="num">39%</td>
+<td class="num hide-sm">£3,885</td>
+<td class="num risk">£1,528</td>
+<td class="num hide-sm">£69</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14154</td>
+<td class="num">34%</td>
+<td class="num hide-sm">£4,450</td>
+<td class="num risk">£1,508</td>
+<td class="num hide-sm">£29</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13139</td>
+<td class="num">31%</td>
+<td class="num hide-sm">£4,849</td>
+<td class="num risk">£1,508</td>
+<td class="num hide-sm">£10</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">12766</td>
+<td class="num">21%</td>
+<td class="num hide-sm">£7,191</td>
+<td class="num risk">£1,507</td>
+<td class="num hide-sm">£19</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="mid">
+<td class="cid">15481</td>
+<td class="num">76%</td>
+<td class="num hide-sm">£1,993</td>
+<td class="num risk">£1,506</td>
+<td class="num hide-sm">£19</td>
+<td><span class="pill mid">Mid</span></td>
+<td class="act">Send 15% win-back offer (automated email)</td>
+</tr><tr data-s="high">
+<td class="cid">13564</td>
+<td class="num">28%</td>
+<td class="num hide-sm">£5,472</td>
+<td class="num risk">£1,505</td>
+<td class="num hide-sm">£70</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15649</td>
+<td class="num">69%</td>
+<td class="num hide-sm">£2,170</td>
+<td class="num risk">£1,504</td>
+<td class="num hide-sm">£110</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">12739</td>
+<td class="num">61%</td>
+<td class="num hide-sm">£2,421</td>
+<td class="num risk">£1,480</td>
+<td class="num hide-sm">£48</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15100</td>
+<td class="num">55%</td>
+<td class="num hide-sm">£2,678</td>
+<td class="num risk">£1,478</td>
+<td class="num hide-sm">£110</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="vip">
+<td class="cid">12980</td>
+<td class="num">14%</td>
+<td class="num hide-sm">£10,323</td>
+<td class="num risk">£1,471</td>
+<td class="num hide-sm">£42</td>
+<td><span class="pill vip">VIP</span></td>
+<td class="act">Account manager calls personally — don't discount blindly</td>
+</tr><tr data-s="high">
+<td class="cid">13124</td>
+<td class="num">42%</td>
+<td class="num hide-sm">£3,490</td>
+<td class="num risk">£1,469</td>
+<td class="num hide-sm">£26</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">17409</td>
+<td class="num">32%</td>
+<td class="num hide-sm">£4,533</td>
+<td class="num risk">£1,464</td>
+<td class="num hide-sm">£34</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">12668</td>
+<td class="num">28%</td>
+<td class="num hide-sm">£5,196</td>
+<td class="num risk">£1,459</td>
+<td class="num hide-sm">£8</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">12370</td>
+<td class="num">54%</td>
+<td class="num hide-sm">£2,686</td>
+<td class="num risk">£1,453</td>
+<td class="num hide-sm">£86</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14101</td>
+<td class="num">23%</td>
+<td class="num hide-sm">£6,183</td>
+<td class="num risk">£1,420</td>
+<td class="num hide-sm">£48</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15497</td>
+<td class="num">47%</td>
+<td class="num hide-sm">£2,976</td>
+<td class="num risk">£1,413</td>
+<td class="num hide-sm">£39</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15983</td>
+<td class="num">58%</td>
+<td class="num hide-sm">£2,432</td>
+<td class="num risk">£1,408</td>
+<td class="num hide-sm">£95</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">17722</td>
+<td class="num">32%</td>
+<td class="num hide-sm">£4,430</td>
+<td class="num risk">£1,404</td>
+<td class="num hide-sm">£38</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="mid">
+<td class="cid">14935</td>
+<td class="num">78%</td>
+<td class="num hide-sm">£1,785</td>
+<td class="num risk">£1,397</td>
+<td class="num hide-sm">£50</td>
+<td><span class="pill mid">Mid</span></td>
+<td class="act">Send 15% win-back offer (automated email)</td>
+</tr><tr data-s="high">
+<td class="cid">12578</td>
+<td class="num">46%</td>
+<td class="num hide-sm">£3,037</td>
+<td class="num risk">£1,389</td>
+<td class="num hide-sm">£38</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">16019</td>
+<td class="num">16%</td>
+<td class="num hide-sm">£8,534</td>
+<td class="num risk">£1,365</td>
+<td class="num hide-sm">£30</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">17672</td>
+<td class="num">58%</td>
+<td class="num hide-sm">£2,329</td>
+<td class="num risk">£1,352</td>
+<td class="num hide-sm">£56</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14744</td>
+<td class="num">52%</td>
+<td class="num hide-sm">£2,575</td>
+<td class="num risk">£1,342</td>
+<td class="num hide-sm">£99</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15476</td>
+<td class="num">60%</td>
+<td class="num hide-sm">£2,210</td>
+<td class="num risk">£1,328</td>
+<td class="num hide-sm">£71</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13722</td>
+<td class="num">35%</td>
+<td class="num hide-sm">£3,748</td>
+<td class="num risk">£1,325</td>
+<td class="num hide-sm">£27</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14001</td>
+<td class="num">45%</td>
+<td class="num hide-sm">£2,910</td>
+<td class="num risk">£1,322</td>
+<td class="num hide-sm">£77</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">17504</td>
+<td class="num">18%</td>
+<td class="num hide-sm">£7,137</td>
+<td class="num risk">£1,320</td>
+<td class="num hide-sm">£48</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">17004</td>
+<td class="num">65%</td>
+<td class="num hide-sm">£2,019</td>
+<td class="num risk">£1,316</td>
+<td class="num hide-sm">£79</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">12406</td>
+<td class="num">44%</td>
+<td class="num hide-sm">£2,967</td>
+<td class="num risk">£1,316</td>
+<td class="num hide-sm">£15</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15057</td>
+<td class="num">55%</td>
+<td class="num hide-sm">£2,391</td>
+<td class="num risk">£1,312</td>
+<td class="num hide-sm">£72</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="mid">
+<td class="cid">16772</td>
+<td class="num">76%</td>
+<td class="num hide-sm">£1,722</td>
+<td class="num risk">£1,309</td>
+<td class="num hide-sm">£49</td>
+<td><span class="pill mid">Mid</span></td>
+<td class="act">Send 15% win-back offer (automated email)</td>
+</tr><tr data-s="high">
+<td class="cid">16182</td>
+<td class="num">24%</td>
+<td class="num hide-sm">£5,504</td>
+<td class="num risk">£1,307</td>
+<td class="num hide-sm">£3</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14673</td>
+<td class="num">64%</td>
+<td class="num hide-sm">£2,048</td>
+<td class="num risk">£1,300</td>
+<td class="num hide-sm">£75</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="mid">
+<td class="cid">17876</td>
+<td class="num">72%</td>
+<td class="num hide-sm">£1,805</td>
+<td class="num risk">£1,297</td>
+<td class="num hide-sm">£49</td>
+<td><span class="pill mid">Mid</span></td>
+<td class="act">Send 15% win-back offer (automated email)</td>
+</tr><tr data-s="high">
+<td class="cid">16709</td>
+<td class="num">29%</td>
+<td class="num hide-sm">£4,498</td>
+<td class="num risk">£1,292</td>
+<td class="num hide-sm">£42</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">16083</td>
+<td class="num">55%</td>
+<td class="num hide-sm">£2,351</td>
+<td class="num risk">£1,284</td>
+<td class="num hide-sm">£75</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15067</td>
+<td class="num">58%</td>
+<td class="num hide-sm">£2,217</td>
+<td class="num risk">£1,278</td>
+<td class="num hide-sm">£42</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="mid">
+<td class="cid">16120</td>
+<td class="num">73%</td>
+<td class="num hide-sm">£1,748</td>
+<td class="num risk">£1,277</td>
+<td class="num hide-sm">£8</td>
+<td><span class="pill mid">Mid</span></td>
+<td class="act">Send 15% win-back offer (automated email)</td>
+</tr><tr data-s="high">
+<td class="cid">14299</td>
+<td class="num">23%</td>
+<td class="num hide-sm">£5,559</td>
+<td class="num risk">£1,276</td>
+<td class="num hide-sm">£49</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">15379</td>
+<td class="num">26%</td>
+<td class="num hide-sm">£4,878</td>
+<td class="num risk">£1,262</td>
+<td class="num hide-sm">£51</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">17838</td>
+<td class="num">48%</td>
+<td class="num hide-sm">£2,623</td>
+<td class="num risk">£1,256</td>
+<td class="num hide-sm">£70</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">17406</td>
+<td class="num">39%</td>
+<td class="num hide-sm">£3,203</td>
+<td class="num risk">£1,256</td>
+<td class="num hide-sm">£77</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="mid">
+<td class="cid">12764</td>
+<td class="num">74%</td>
+<td class="num hide-sm">£1,694</td>
+<td class="num risk">£1,245</td>
+<td class="num hide-sm">£9</td>
+<td><span class="pill mid">Mid</span></td>
+<td class="act">Send 15% win-back offer (automated email)</td>
+</tr><tr data-s="high">
+<td class="cid">17787</td>
+<td class="num">48%</td>
+<td class="num hide-sm">£2,601</td>
+<td class="num risk">£1,237</td>
+<td class="num hide-sm">£59</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13495</td>
+<td class="num">39%</td>
+<td class="num hide-sm">£3,191</td>
+<td class="num risk">£1,233</td>
+<td class="num hide-sm">£63</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13758</td>
+<td class="num">25%</td>
+<td class="num hide-sm">£4,896</td>
+<td class="num risk">£1,230</td>
+<td class="num hide-sm">£36</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14934</td>
+<td class="num">52%</td>
+<td class="num hide-sm">£2,341</td>
+<td class="num risk">£1,229</td>
+<td class="num hide-sm">£50</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">13090</td>
+<td class="num">14%</td>
+<td class="num hide-sm">£9,001</td>
+<td class="num risk">£1,222</td>
+<td class="num hide-sm">£41</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">16003</td>
+<td class="num">33%</td>
+<td class="num hide-sm">£3,675</td>
+<td class="num risk">£1,215</td>
+<td class="num hide-sm">£45</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">17230</td>
+<td class="num">33%</td>
+<td class="num hide-sm">£3,638</td>
+<td class="num risk">£1,213</td>
+<td class="num hide-sm">£40</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14828</td>
+<td class="num">30%</td>
+<td class="num hide-sm">£4,029</td>
+<td class="num risk">£1,208</td>
+<td class="num hide-sm">£31</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="mid">
+<td class="cid">14882</td>
+<td class="num">63%</td>
+<td class="num hide-sm">£1,899</td>
+<td class="num risk">£1,201</td>
+<td class="num hide-sm">£95</td>
+<td><span class="pill mid">Mid</span></td>
+<td class="act">Send 15% win-back offer (automated email)</td>
+</tr><tr data-s="high">
+<td class="cid">12377</td>
+<td class="num">58%</td>
+<td class="num hide-sm">£2,055</td>
+<td class="num risk">£1,200</td>
+<td class="num hide-sm">£50</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14739</td>
+<td class="num">25%</td>
+<td class="num hide-sm">£4,805</td>
+<td class="num risk">£1,194</td>
+<td class="num hide-sm">£59</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14913</td>
+<td class="num">38%</td>
+<td class="num hide-sm">£3,111</td>
+<td class="num risk">£1,191</td>
+<td class="num hide-sm">£60</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr><tr data-s="high">
+<td class="cid">14841</td>
+<td class="num">33%</td>
+<td class="num hide-sm">£3,603</td>
+<td class="num risk">£1,190</td>
+<td class="num hide-sm">£59</td>
+<td><span class="pill high">High</span></td>
+<td class="act">Send 15% win-back offer + personal note</td>
+</tr></tbody></table>
+<div class="note">Top 120 of 2,300 customers the economics say are worth contacting.
+Ranked by <strong>revenue at risk</strong> (churn probability × what they're worth) — not by
+churn probability, which would put worthless customers at the top.</div>
+
+<h2>The catch</h2>
+<div class="limit">
+<div class="t">The save rate is doing all the work — validate it first</div>
+<p style="color:#c3ccd7;font-size:15px">We assume a <strong>25% save rate</strong>: that 1 in 4
+would-be churners can be rescued by an offer. It's a plausible industry figure. <strong>We did not
+measure it, because this dataset cannot.</strong> The whole programme lives or dies on it:</p>
+<table class="mini">
+<tr><td>save rate 15%</td><td class="bad">−£1,066</td></tr>
+<tr><td>save rate 20%</td><td class="bad">−£1,009</td></tr>
+<tr><td>save rate 25% (assumed)</td><td class="good">+£1,841</td></tr>
+<tr><td>save rate 30%</td><td class="good">+£6,652</td></tr>
+</table>
+<div class="note">Below roughly 25%, this campaign destroys value. Before a real brand spends a penny
+here, it should run a holdout test on a few hundred customers and measure its actual save rate.
+That single number decides whether any of this is worth doing.</div>
+</div>
+
+<footer>
+Built by <a href="https://github.com/FerasElghandour">Feras Elghandour</a> — part of a series on building intelligent systems
+that solve real-world problems.<br>
+Data: <b>Online Retail II</b> (UCI) — 1,067,371 real UK ecommerce transactions, Dec 2009–Dec 2011.
+Churn is <em>defined</em>, not observed: 90 days of silence among customers active in the prior year.
+Same six-box architecture as my <a href="https://feraselghandour.github.io/predictive-maintenance/">predictive
+maintenance project</a> — different nouns, inverted cost asymmetry.
+</footer>
+
+</div><script>
+const btns=document.querySelectorAll('.filters button');
+btns.forEach(b=>b.onclick=()=>{
+  btns.forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  const f=b.dataset.f;
+  document.querySelectorAll('.tbl tbody tr').forEach(r=>{
+    r.style.display=(f==='all'||r.dataset.s===f)?'':'none';
+  });
+});
+</script></body></html>
