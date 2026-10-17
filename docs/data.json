@@ -1,0 +1,140 @@
+{
+  "kind": "churn",
+  "historical_metrics": {
+    "assumptions": {
+      "gross_margin": 0.4,
+      "offer_discount": 0.15,
+      "offer_scope": "next_order",
+      "save_rate": 0.25,
+      "contact_cost": 1.5,
+      "horizon_days": 365
+    },
+    "book": {
+      "customers": 4306,
+      "forward_revenue": 6727472.628,
+      "revenue_at_risk": 1754167.5884008,
+      "margin_at_risk": 701667.03536032
+    },
+    "list_size": 2300,
+    "list_value_at_risk": 1142638.4282983001,
+    "best_policy": "fixed p>=50%",
+    "best_net": 2509.0,
+    "offer_design": [
+      {
+        "offer": "15% off, next_order",
+        "median_breakeven": "49%",
+        "contacted": 558,
+        "NET": 1841
+      },
+      {
+        "offer": "15% off, annual",
+        "median_breakeven": "72%",
+        "contacted": 190,
+        "NET": -858
+      }
+    ],
+    "sweep": [
+      {
+        "policy": "EV-optimal (value-weighted)",
+        "contacted": 558,
+        "pct_of_base": 51.8,
+        "precision": 53.6,
+        "churners_caught": 299,
+        "recall": 56.4,
+        "margin_saved": 17845,
+        "discount_wasted": 15167,
+        "contact_cost": 837,
+        "NET": 1841
+      },
+      {
+        "policy": "fixed p>=30%",
+        "contacted": 806,
+        "pct_of_base": 74.8,
+        "precision": 60.0,
+        "churners_caught": 484,
+        "recall": 91.3,
+        "margin_saved": 22045,
+        "discount_wasted": 18383,
+        "contact_cost": 1209,
+        "NET": 2454
+      },
+      {
+        "policy": "fixed p>=40%",
+        "contacted": 685,
+        "pct_of_base": 63.6,
+        "precision": 64.1,
+        "churners_caught": 439,
+        "recall": 82.8,
+        "margin_saved": 17194,
+        "discount_wasted": 13738,
+        "contact_cost": 1028,
+        "NET": 2429
+      },
+      {
+        "policy": "fixed p>=50%",
+        "contacted": 573,
+        "pct_of_base": 53.2,
+        "precision": 67.5,
+        "churners_caught": 387,
+        "recall": 73.0,
+        "margin_saved": 13395,
+        "discount_wasted": 10027,
+        "contact_cost": 860,
+        "NET": 2509
+      },
+      {
+        "policy": "fixed p>=60%",
+        "contacted": 405,
+        "pct_of_base": 37.6,
+        "precision": 73.1,
+        "churners_caught": 296,
+        "recall": 55.8,
+        "margin_saved": 9246,
+        "discount_wasted": 6246,
+        "contact_cost": 608,
+        "NET": 2392
+      },
+      {
+        "policy": "fixed p>=70%",
+        "contacted": 247,
+        "pct_of_base": 22.9,
+        "precision": 75.3,
+        "churners_caught": 186,
+        "recall": 35.1,
+        "margin_saved": 3956,
+        "discount_wasted": 3556,
+        "contact_cost": 370,
+        "NET": 29
+      },
+      {
+        "policy": "fixed p>=80%",
+        "contacted": 92,
+        "pct_of_base": 8.5,
+        "precision": 80.4,
+        "churners_caught": 74,
+        "recall": 14.0,
+        "margin_saved": 1235,
+        "discount_wasted": 1406,
+        "contact_cost": 138,
+        "NET": -309
+      },
+      {
+        "policy": "fixed p>=90%",
+        "contacted": 1,
+        "pct_of_base": 0.1,
+        "precision": 100.0,
+        "churners_caught": 1,
+        "recall": 0.2,
+        "margin_saved": 292,
+        "discount_wasted": 0,
+        "contact_cost": 2,
+        "NET": 291
+      }
+    ],
+    "robustness": {
+      "net_all": 1841.0,
+      "median_per_contact": 6.753218750000001,
+      "pct_contacts_profitable": 0.53584229390681
+    }
+  }
+}

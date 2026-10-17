@@ -175,7 +175,8 @@ def decide(df: pd.DataFrame, scope=OFFER_SCOPE) -> pd.DataFrame:
 def evaluate_policy(d, threshold=None, use_ev=True, scope=OFFER_SCOPE):
     """
     Score a policy against the TRUTH — held-out customers, real outcomes.
-    This is a realised P&L, not a projection.
+    This is modeled P&L using observed churn labels and an assumed treatment response.
+    No campaign treatment or realized retention profit is observed.
     """
     flagged = d[d["ev_of_offer"] > 0] if use_ev else d[d["churn_prob"] >= threshold]
     if len(flagged) == 0:
