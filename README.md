@@ -12,6 +12,15 @@ Connect customer churn probabilities to explicit retention economics, including 
 
 ![Implementation mechanism: Purchase inactivity and cadence features → Predicted churn probability → Assumed rescue rate and retained margin → Subtract offer and contact costs → Contact only when expected value is positive](assets/mechanism.svg)
 
+
+
+## Reproduce and inspect
+
+The executable reproduction profile now records exact commands, input/source hashes, dependency versions, logs and pass/fail status. Its scope distinguishes behavior checks from full-data benchmarks.
+
+[Commands, artifacts and benchmark scope](BENCHMARKS.md) · [Versioned profiles](reproduction.json)
+
+
 ## Try a small example
 
 The offer scenario uses assumed treatment response and costs. Expected value is a model-based calculation, not an observed retention uplift.
