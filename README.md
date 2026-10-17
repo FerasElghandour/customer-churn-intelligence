@@ -83,3 +83,7 @@ The original pipeline requires its attributed transaction input; see `src/data.p
 Useful for evaluating which customers could justify intervention and how offer design changes the economics. A production campaign requires an independently evaluated probability model, measured incremental treatment response from a randomized holdout, consent and suppression controls, data contracts, monitored delivery, and human approval. This public demonstration sends no messages and claims no client revenue result.
 
 [Portfolio](https://feraselghandour.github.io/) · [Professional inquiries](https://www.linkedin.com/in/feras-elghandour/)
+
+## Reuse
+
+The original contributions listed in [LICENSING.md](LICENSING.md) are available under [MIT](LICENSE). This scoped grant preserves upstream notices and separate dataset, simulator, notebook and checkpoint terms.
