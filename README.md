@@ -10,14 +10,7 @@ Connect customer churn probabilities to explicit retention economics, including 
 
 ## How it works
 
-```mermaid
-flowchart TD
-    N0["Purchase inactivity and cadence features"] --> N1
-    N1["Predicted churn probability"] --> N2
-    N2["Assumed rescue rate and retained margin"] --> N3
-    N3["Subtract offer and contact costs"] --> N4
-    N4["Contact only when expected value is positive"]
-```
+![Implementation mechanism: Purchase inactivity and cadence features → Predicted churn probability → Assumed rescue rate and retained margin → Subtract offer and contact costs → Contact only when expected value is positive](assets/mechanism.svg)
 
 ## Try a small example
 
