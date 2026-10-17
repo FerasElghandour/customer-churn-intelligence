@@ -1,0 +1,1 @@
+{"fixture": "synthetic customer; assumed treatment response", "next_order_ev": 106.125, "annual_discount_ev": -46.5, "breakeven_next": 0.1106628242074928}

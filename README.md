@@ -8,6 +8,40 @@ Connect customer churn probabilities to explicit retention economics, including 
 
 [![Retention scenario calculator](assets/demo-preview.png)](https://feraselghandour.github.io/customer-churn-intelligence/)
 
+## How it works
+
+```mermaid
+flowchart TD
+    N0["Purchase inactivity and cadence features"] --> N1
+    N1["Predicted churn probability"] --> N2
+    N2["Assumed rescue rate and retained margin"] --> N3
+    N3["Subtract offer and contact costs"] --> N4
+    N4["Contact only when expected value is positive"]
+```
+
+## Try a small example
+
+The offer scenario uses assumed treatment response and costs. Expected value is a model-based calculation, not an observed retention uplift.
+
+After the local setup below, run from the repository root:
+
+```sh
+python examples/quickstart.py
+```
+
+The [example source](examples/quickstart.py), [captured output](examples/expected-output.txt) and [execution record](examples/environment.json) keep this demonstration inspectable. Floating-point values may vary with library versions.
+
+Observed output from this run:
+
+```text
+{
+  "fixture": "synthetic customer; assumed treatment response",
+  "next_order_ev": 106.125,
+  "annual_discount_ev": -46.5,
+  "breakeven_next": 0.1106628242074928
+}
+```
+
 ## Problem and implementation
 
 In non-contractual retail, churn is a definition derived from purchase inactivity. This project constructs a 90-day inactivity label, builds RFM/cadence/trend features, compares classifiers, and applies a per-customer expected-value decision model.
